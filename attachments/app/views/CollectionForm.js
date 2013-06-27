@@ -5,8 +5,8 @@ $(function() {
     className: "form",
 
     events: {
-      "click #formButton": "saveForm",
-      "submit form" : "saveFormFromEnterKey"
+      "click #formButton": "setForm",
+      "submit form" : "setFormFromEnterKey"
     },
 
     render: function() {
@@ -18,18 +18,16 @@ $(function() {
       this.$el.append($button)
     },
 
-    saveFormFromEnterKey: function(event) {
+    setFormFromEnterKey: function(event) {
       event.preventDefault()
-      this.saveForm()
+      this.setForm()
     },
 
-    saveForm: function() {
+    setForm: function() {
       // Put the form's input into the model in memory
       this.form.commit()
       // Send the updated model to the server
-      this.model.save(null, {success: function() {
-        Backbone.history.navigate("collections", {trigger: true})
-      }})
+      this.model.process()
     },
 
 

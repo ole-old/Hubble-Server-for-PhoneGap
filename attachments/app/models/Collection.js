@@ -35,35 +35,31 @@ $(function() {
     },
 
     initialize: function(){
-      // Create a database for this collection if there is none
-      // @todo this ends up getting called twice which results in harmless
-      // conflicts but there's probably a better way.
-      if(this.get('database') == 'none') {
-        this.createDatabase()
-      }
-      // @todo We could subscribe the CouchDB _changes feed here to watch for updates on this model
+
     },
 
-    createDatabase: function() {
-      console.log('Attempting to create a database ' + this.get("_id"))
-      var databaseName = "collection-" + this.get('_id')
-      var that = this
-      $.couch.db(databaseName).create({
-        success: function(data) {
-          that.set("database", databaseName)
-          that.save()
-          console.log("setting whoami")
-          var whoami = that.toJSON()
-          whoami.guid = whoami._id
-          whoami._id = "whoami"
-          whoami.id = "whoami"
-          delete(whoami._rev)
-          $.couch.db(databaseName).saveDoc(whoami)
-        },
-        error: function(status) {
-          console.log(status)
-        }
+    process: function() {
+      console.log('Attempting to create a database')
+      var model = this
+      $.getJSON('/_uuids', function(res) {
+        var databaseName = 'collection-' + res.uuids[0]
+        $.couch.db(databaseName).create({
+          success: function(data) {
+            model.set('database', databaseName)
+            var whoami = model.toJSON()
+            console.log("setting whoami")
+            whoami._id = "whoami"
+            whoami.id = "whoami"
+            delete(whoami._rev)
+            $.couch.db(databaseName).saveDoc(whoami)
+            model.trigger("processed")
+          },
+          error: function(status) {
+            console.log(status)
+          }
+        })
       })
+
     },
     
   }) /* End Backbone.Model.extend */

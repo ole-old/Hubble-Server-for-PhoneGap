@@ -13,7 +13,6 @@ $(function() {
     },
 
     ResourceSend : function(db, resourceId) {
-
       var collections = new App.Collections.Collections()
       collections.fetch()
       var resourceSendTable = new App.Views.ResourceSendTable({collection: collections})
@@ -22,11 +21,24 @@ $(function() {
     },
 
     CollectionAdd : function() {
+
+      // Set up the model
       var collection = new App.Models.Collection()
+      // when the users submits the form, the collection will be processed
+      collection.on('processed', function() {
+        this.save()
+      })
+      // after this collection is saved move on to the collections page
+      collection.on('sync', function() {
+        Backbone.history.navigate('collections', {trigger: true})
+      })
+
+      // Set up the form
       var collectionForm = new App.Views.CollectionForm({model: collection})
       collectionForm.render()
       $('#modal').modal('show')
       $("#modal .content").html(collectionForm.el)
+
     },
 
     ResourceForm : function(db, resourceId) {

@@ -2,17 +2,17 @@ $(function() {
   App.Router = new (Backbone.Router.extend({
 
     routes: {
-      ''                                         : 'pageCollections',
-      'collections'                              : 'pageCollections',
-      'collection/resource/add/:db'              : 'pageResourceForm',
-      'collection/resource/edit/:db/:resourceId' : 'pageResourceForm',
-      'collection/resource/send/:db/:resourceId' : 'pageResourceSend',
-      'collection/resources/:db'                 : 'pageCollectionResources',
-      'collection/add'                           : 'pageCollectionAdd',
-      'collection/:collectionName'               : 'pageCollection',
+      ''                                         : 'Collections',
+      'collections'                              : 'Collections',
+      'collection/resource/add/:db'              : 'ResourceForm',
+      'collection/resource/edit/:db/:resourceId' : 'ResourceForm',
+      'collection/resource/send/:db/:resourceId' : 'ResourceSend',
+      'collection/resources/:db'                 : 'CollectionResources',
+      'collection/add'                           : 'CollectionAdd',
+      'collection/:collectionName'               : 'Collection',
     },
 
-    pageResourceSend : function(db, resourceId) {
+    ResourceSend : function(db, resourceId) {
 
       var collections = new App.Collections.Collections()
       collections.fetch()
@@ -21,7 +21,7 @@ $(function() {
       App.$el.children('#body').html(resourceSendTable.el)
     },
 
-    pageCollectionAdd : function() {
+    CollectionAdd : function() {
       var collection = new App.Models.Collection()
       var collectionForm = new App.Views.CollectionForm({model: collection})
       collectionForm.render()
@@ -29,7 +29,7 @@ $(function() {
       $("#modal .content").html(collectionForm.el)
     },
 
-    pageResourceForm : function(db, resourceId) {
+    ResourceForm : function(db, resourceId) {
       window.thisDb = db
       var resource = (resourceId)
         ? new App.Models.Resource({id: resourceId})
@@ -39,7 +39,7 @@ $(function() {
       App.$el.children('#body').html(resourceFormView.el)
     },
 
-    pageCollectionResources: function(db) {
+    CollectionResources: function(db) {
       App.thisDb = db
       var resources = new App.Collections.Resources()
       resources.fetch({success: function() {
@@ -50,7 +50,7 @@ $(function() {
      
     },
 
-    pageCollections: function() {
+    Collections: function() {
       // in case the modal is up, hide it
       $("#modal").modal("hide")
       collections = new App.Collections.Collections()
@@ -61,7 +61,7 @@ $(function() {
       }})
     },
 
-    pageCollection: function(collectionName) {
+    Collection: function(collectionName) {
     
       App.resources = new App.Collections.Resources()
       App.resources.fetch({success: function() {

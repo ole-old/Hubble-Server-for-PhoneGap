@@ -1,6 +1,8 @@
 $(function() {
 
+
   App = new (Backbone.View.extend({
+
 
     Models: {},
     Views: {},
@@ -12,6 +14,7 @@ $(function() {
     template: $("#template-app").html(),
 
     events: {
+      // For the x button on the modal
       "click .close" : "closeModal"
     },
 
@@ -23,9 +26,29 @@ $(function() {
     },
 
     closeModal: function() {
-      Backbone.history.navigate("", {trigger:true})
+      $("#modal").modal("hide")
+    },
+
+    sendResource: function(sourceDatabase, targetDatabase, sourceId, target) {
+      $.couch.replicate(
+        sourceDatabase, 
+        targetDatabase, 
+        {
+          success: function() {
+            target.trigger('received')
+          },
+          error: function(err) {
+            alert('Woops, had a problem sending that.')
+          }
+        },
+        {
+          doc_ids: [ sourceId ]
+        }
+      )
     }
 
+
   }))
+
 
 })

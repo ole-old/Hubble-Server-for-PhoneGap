@@ -12,20 +12,26 @@ $(function() {
       'collection/:collectionId'                 : 'Collection',
     },
 
-    ResourceSend : function(db, resourceId) {
+    ResourceSend : function(sourceDatabase, sourceId) {
       var collections = new App.Collections.Collections()
       collections.fetch()
       collections.on('sync', function() {
         this.each(function(model) {
-          model.on('resourceSent', function(){ 
+          
+          model.on('receive', function() {
+            App.sendResource(sourceDatabase, this.get('database'), sourceId, this)
+          }, model)
+
+          model.on('received', function(){ 
             Backbone.history.navigate('collection/resources/' + this.get('database'), {trigger:true}) 
           }, model)
+
         }) 
       }, collections)
 
-      var resourceSendTable = new App.Views.ResourceSendTable({collection: collections})
-      resourceSendTable.render()
-      App.$el.children('#body').html(resourceSendTable.el)
+      var sendToCollectionTable = new App.Views.SendToCollectionTable({collection: collections})
+      sendToCollectionTable.render()
+      App.$el.children('#body').html(sendToCollectionTable.el)
     },
 
     CollectionAdd : function() {

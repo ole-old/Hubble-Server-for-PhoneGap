@@ -5,11 +5,6 @@ $(function() {
 
     className: "table table-striped",
 
-    initialize: function(){
-      this.collection.on('add', this.addOne, this)
-      this.collection.on('reset', this.addAll, this)
-    },
-
     addOne: function(model){
       var collectionRow = new App.Views.CollectionRow({model: model})
       collectionRow.render()  

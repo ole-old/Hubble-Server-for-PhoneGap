@@ -9,7 +9,7 @@ $(function() {
       'collection/resource/send/:db/:resourceId' : 'ResourceSend',
       'collection/resources/:db'                 : 'CollectionResources',
       'collection/add'                           : 'CollectionAdd',
-      'collection/:collectionName'               : 'Collection',
+      'collection/:collectionId'                 : 'Collection',
     },
 
     ResourceSend : function(db, resourceId) {
@@ -46,6 +46,9 @@ $(function() {
       var resource = (resourceId)
         ? new App.Models.Resource({id: resourceId})
         : new App.Models.Resource()
+      resource.on('processed', function() {
+        Backbone.history.navigate('collection/resources/' + db, {trigger: true})
+      })
       var resourceFormView = new App.Views.ResourceForm({model: resource})
       resourceFormView.render()
       App.$el.children('#body').html(resourceFormView.el)
@@ -62,6 +65,8 @@ $(function() {
      
     },
 
+    // @todo When a CollectionRow's delete button is pressed and that CollectionRow was added since the last page
+    // refresh, this Collections route will be called. Why?
     Collections: function() {
       // in case the modal is up, hide it
       $("#modal").modal("hide")
@@ -73,8 +78,9 @@ $(function() {
       }})
     },
 
-    Collection: function(collectionName) {
-    
+    Collection: function(collectionId) {
+      
+      // @todo Shouldn't I be feeding collectionId into this?
       App.resources = new App.Collections.Resources()
       App.resources.fetch({success: function() {
         console.log(App.resources)

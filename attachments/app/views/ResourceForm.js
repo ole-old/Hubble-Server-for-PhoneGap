@@ -32,7 +32,9 @@ $(function() {
         var that = this
         this.model.save(null, {success: function() {
           that.model.saveAttachment("form#fileAttachment", "form#fileAttachment #_attachments", "form#fileAttachment .rev" )
-          Backbone.history.navigate('#collection/resources/' + App.thisDb, {trigger: true})
+          that.model.on('savedAttachment', function() {
+            this.trigger('processed')
+          }, that.model)
         }})
 
     },

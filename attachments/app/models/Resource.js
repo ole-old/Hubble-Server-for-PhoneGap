@@ -29,7 +29,7 @@ $(function() {
             var input_id = (this.get('_id'))
               ? this.get('_id')
               : this.get('id')
-            //var input_rev = $('.documentForm input#_rev').val()
+            var model = this
            
             // Start by trying to open a Couch Doc at the _id and _db specified
             $.couch.db(input_db).openDoc(input_id, {
@@ -44,7 +44,7 @@ $(function() {
                 $(formEl).ajaxSubmit({
                   url: "/"+ input_db +"/"+ input_id,
                   success: function(response) {
-                    alert("Your attachment was submitted.")
+                    model.trigger('savedAttachment')
                   }
                 })
               }, // End success, we have a Doc
@@ -61,7 +61,7 @@ $(function() {
                       // Submit the form with the attachment
                       url: "/"+ input_db +"/"+ input_id,
                       success: function(response) {
-                        alert("Your attachment was submitted.")
+                        model.trigger('savedAttachment')                        
                       }
                     })
                   }

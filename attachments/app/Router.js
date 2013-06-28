@@ -7,7 +7,7 @@ $(function() {
       'collection/resource/add/:db'              : 'ResourceForm',
       'collection/resource/edit/:db/:resourceId' : 'ResourceForm',
       'collection/resource/send/:db/:resourceId' : 'ResourceSend',
-      'collection/resources/:db'                 : 'CollectionResources',
+      'collection/resources/:database'           : 'CollectionResources',
       'collection/add'                           : 'CollectionAdd',
       'collection/:collectionId'                 : 'Collection',
     },
@@ -15,6 +15,14 @@ $(function() {
     ResourceSend : function(db, resourceId) {
       var collections = new App.Collections.Collections()
       collections.fetch()
+      collections.on('sync', function() {
+        this.each(function(model) {
+          model.on('resourceSent', function(){ 
+            Backbone.history.navigate('collection/resources/' + this.get('database'), {trigger:true}) 
+          }, model)
+        }) 
+      }, collections)
+
       var resourceSendTable = new App.Views.ResourceSendTable({collection: collections})
       resourceSendTable.render()
       App.$el.children('#body').html(resourceSendTable.el)
@@ -54,8 +62,8 @@ $(function() {
       App.$el.children('#body').html(resourceFormView.el)
     },
 
-    CollectionResources: function(db) {
-      App.thisDb = db
+    CollectionResources: function(database) {
+      App.thisDb = database
       var resources = new App.Collections.Resources()
       resources.fetch({success: function() {
         var resourcesTableView = new App.Views.ResourcesTable({collection: resources})

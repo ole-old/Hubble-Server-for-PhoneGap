@@ -7,17 +7,23 @@ $(function() {
     events: {
       "click .send" : function(event) {
         event.preventDefault();
+        var model = this.model
         $.couch.replicate(
+
           $.url().fsegment(4), 
-          this.model.get('database'), 
+
+          model.get('database'), 
+
           {
             success: function() {
               alert('Sent successfully')
+              model.trigger('resourceSent')
             },
             error: function(err) {
               alert('Woops, had a problem sending that.')
             }
           },
+
           {
             doc_ids: [ $.url().fsegment(5) ]
           }

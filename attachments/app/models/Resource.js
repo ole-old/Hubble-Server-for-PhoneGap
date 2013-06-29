@@ -5,11 +5,11 @@ $(function() {
     idAttribute: "_id",
 
     url: function() {
-      var url = (this.get('id'))
-        ? '/' + App.thisDb + '/' + this.get('id') + "?rev=" + this.get('rev')
-        : '/' + App.thisDb
+      var url = (_.has(this, 'id'))
+        ? '/' + App.thisDb + '/' + this.id + "?rev=" + this.get('_rev') // For READ, UPDATE, and DELETE
+        : '/' + App.thisDb // for CREATE
 
-      return "/" + window.thisDb
+      return url
     },
 
     defaults: {

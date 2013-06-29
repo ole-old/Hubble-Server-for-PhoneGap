@@ -5,10 +5,13 @@ $(function() {
     tagName: "tr",
 
     events: {
-      "click .destroy" : function() {
+      "click .destroy" : function(e) {
+        e.preventDefault()
         this.model.destroy()
+        this.remove()
       },
-      "click .browse" : function() {
+      "click .browse" : function(e) {
+        e.preventDefault()
         $('#modal').modal({show:true})
       }
     },
@@ -16,7 +19,7 @@ $(function() {
     template : $("#template-CollectionRow").html(),
 
     initialize: function() {
-      this.model.on('destroy', this.remove, this)
+      //this.model.on('destroy', this.remove, this)
     },
 
     render: function () {
